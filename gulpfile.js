@@ -2,27 +2,27 @@ const gulp = require('gulp'),
   webserver = require('gulp-server-io'),
   dest = 'builds/codeclinic/';
 
-gulp.task('html', function() {
+gulp.task('html', async function() {
   gulp.src(dest + '**/*.html');
 });
 
 // Regular CSS
-gulp.task('css', function() {
+gulp.task('css', async function() {
   gulp.src(dest + '**/*.css');
 });
 
 // JavaScript ES6
-gulp.task('js', function() {
+gulp.task('js', async function() {
   gulp.src(dest + '**/*.js');
 });
 
 gulp.task('watch', function() {
-  gulp.watch(dest + '**/*.js', ['js']);
-  gulp.watch(dest + '**/*.css', ['css']); //CSS
-  gulp.watch(dest + '**/*.html', ['html']);
+  gulp.watch(dest + '**/*.js', gulp.series('js'));
+  gulp.watch(dest + '**/*.css', gulp.series('css')); //CSS
+  gulp.watch(dest + '**/*.html', gulp.series('html'));
 });
 
-gulp.task('webserver', function() {
+gulp.task('webserver', async function() {
   gulp.src(dest).pipe(
     webserver({
       serverReload: {
@@ -35,4 +35,4 @@ gulp.task('webserver', function() {
   );
 });
 
-gulp.task('default', ['html', 'css', 'js', 'webserver', 'watch']);
+gulp.task('default', gulp.series('html', 'css', 'js', 'webserver', 'watch'));
